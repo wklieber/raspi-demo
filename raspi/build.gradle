@@ -30,7 +30,8 @@ repositories {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'wklieber.raspi.Raspi'
+        //attributes 'Main-Class': 'wklieber.raspi.Raspi'
+        attributes 'Main-Class': 'wklieber.raspi.ws.RaspiApplication'
     }
 }
 
@@ -42,8 +43,8 @@ task installOnPi(dependsOn: shadowJar) {
     doLast {
         ssh.run {
             session(remotes.rpi) {
-                put "${buildDir}/${project.name}-${project.version}-all.jar", remoteFolder
-                execute "java -jar $remoteFolder/${project.name}-${project.version}-all.jar"
+                put from:"${buildDir}/libs/${project.name}-${project.version}-all.jar", into:"/home/pi/opt"
+                //execute "java -jar opt/${project.name}-${project.version}-all.jar"
             }
         }
     }

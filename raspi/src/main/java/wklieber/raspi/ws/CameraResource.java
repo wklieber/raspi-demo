@@ -24,10 +24,7 @@ import com.hopding.jrpicam.RPiCamera;
 import com.hopding.jrpicam.exceptions.FailedToRunRaspistillException;
 
 import javax.imageio.ImageIO;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.awt.image.BufferedImage;
@@ -43,7 +40,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by wklieber on 28.12.2016.
  */
 @Path("/camera")
+//@Api("/camera")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class CameraResource {
     private final AtomicLong counter;
     private final SimpleDateFormat formatter;
@@ -58,7 +57,9 @@ public class CameraResource {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
+    @GET
     @Produces("image/png")
+    @Path("/takeImage")
     public Response takeImage(@QueryParam("width") Integer width,
                               @QueryParam("height") Integer height) throws IOException, InterruptedException {
         //2592x1944
@@ -82,6 +83,7 @@ public class CameraResource {
 
     @GET
     @Timed
+    @Path("/sayHello")
     public Saying sayHello(@QueryParam("name") Optional<String> name) {
         final String value = String.format("raspberry", name.or("pi"));
         return new Saying(counter.incrementAndGet(), value);
