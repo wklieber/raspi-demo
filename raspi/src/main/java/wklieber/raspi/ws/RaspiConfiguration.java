@@ -16,28 +16,38 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wklieber.raspi.tools;
+package wklieber.raspi.ws;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
+import io.dropwizard.Configuration;
 
 /**
- * Created by wklieber on 25.12.2016.
+ * Created by wklieber on 28.12.2016.
  */
-public class MiscTools {
-    /**
-  *
-     */
-    public static String formatNumber(double number, Integer minimumIntegerDigits) {
-        String returnValue = "NA";
+public class RaspiConfiguration extends Configuration {
+    /**@NotEmpty
+    private String template;
 
-       java.text.NumberFormat df = DecimalFormat.getInstance(Locale.GERMANY);
-        if (minimumIntegerDigits != null) {
-            df.setMinimumIntegerDigits(minimumIntegerDigits);
-        }
+    @NotEmpty
+    private String defaultName = "Stranger";
 
-        returnValue = df.format(number);
-
-        return returnValue;
+    @JsonProperty
+    public String getTemplate() {
+        return template;
     }
+
+    @JsonProperty
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    @JsonProperty
+    public String getDefaultName() {
+        return defaultName;
+    }
+
+    @JsonProperty
+    public void setDefaultName(String name) {
+        this.defaultName = name;
+    }
+    */
 }

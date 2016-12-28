@@ -16,28 +16,36 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wklieber.raspi.tools;
+package wklieber.raspi.ws;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.Length;
 
 /**
- * Created by wklieber on 25.12.2016.
+ * Created by wklieber on 28.12.2016.
  */
-public class MiscTools {
-    /**
-  *
-     */
-    public static String formatNumber(double number, Integer minimumIntegerDigits) {
-        String returnValue = "NA";
+public class Saying {
+    private long id;
 
-       java.text.NumberFormat df = DecimalFormat.getInstance(Locale.GERMANY);
-        if (minimumIntegerDigits != null) {
-            df.setMinimumIntegerDigits(minimumIntegerDigits);
-        }
+    @Length(max = 3)
+    private String content;
 
-        returnValue = df.format(number);
+    public Saying() {
+        // Jackson deserialization
+    }
 
-        return returnValue;
+    public Saying(long id, String content) {
+        this.id = id;
+        this.content = content;
+    }
+
+    @JsonProperty
+    public long getId() {
+        return id;
+    }
+
+    @JsonProperty
+    public String getContent() {
+        return content;
     }
 }

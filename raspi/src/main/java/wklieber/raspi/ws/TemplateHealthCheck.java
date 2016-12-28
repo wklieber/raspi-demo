@@ -16,28 +16,26 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package wklieber.raspi.tools;
+package wklieber.raspi.ws;
 
-import java.text.DecimalFormat;
-import java.util.Locale;
+import com.codahale.metrics.health.HealthCheck;
 
 /**
- * Created by wklieber on 25.12.2016.
+ * Created by wklieber on 28.12.2016.
  */
-public class MiscTools {
-    /**
-  *
-     */
-    public static String formatNumber(double number, Integer minimumIntegerDigits) {
-        String returnValue = "NA";
+public class TemplateHealthCheck extends HealthCheck {
+    private final String template;
 
-       java.text.NumberFormat df = DecimalFormat.getInstance(Locale.GERMANY);
-        if (minimumIntegerDigits != null) {
-            df.setMinimumIntegerDigits(minimumIntegerDigits);
+    public TemplateHealthCheck(String template) {
+        this.template = template;
+    }
+
+    @Override
+    protected Result check() throws Exception {
+        final String saying = String.format(template, "TEST");
+        if (!saying.contains("TEST")) {
+            return HealthCheck.Result.unhealthy("template doesn't include a name");
         }
-
-        returnValue = df.format(number);
-
-        return returnValue;
+        return Result.healthy();
     }
 }

@@ -1,35 +1,41 @@
+/*
+ *     Raspberry PI sample code
+ *     Copyright (C) 2016 -  2016  Werner Klieber
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as
+ *     published by the Free Software Foundation, either version 3 of the
+ *     License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package wklieber.raspi.tools;
 
 /**
  * Created by wklieber on 25.12.2016.
  */
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Label;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
 
 import com.hopding.jrpicam.RPiCamera;
 import com.hopding.jrpicam.enums.AWB;
 import com.hopding.jrpicam.enums.DRC;
 import com.hopding.jrpicam.enums.Encoding;
 import com.hopding.jrpicam.enums.Exposure;
-import com.hopding.jrpicam.exceptions.FailedToRunRaspistillException;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class DemoView {
 
@@ -63,10 +69,14 @@ public class DemoView {
     public DemoView() {
         try {
             piCamera = new RPiCamera("/home/pi/Pictures");
-        } catch (FailedToRunRaspistillException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         initialize();
+    }
+
+    public void show() {
+        this.frame.setVisible(true);
     }
 
     /**

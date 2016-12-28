@@ -1,0 +1,17 @@
+# all dropwizard specific settings, see at
+# http://www.dropwizard.io/manual/configuration.html#man-configuration-all
+server:
+  # use a path with final /api/* where rest services are added by dropwizard
+  # otherwise the "real root" can not be used by html-bundels (already used)
+  rootPath: /api/*
+
+  # set here the url prefix for all calls (html bundles and rest calls)
+  applicationContextPath: /
+  adminContextPath: /
+
+  applicationConnectors:
+  - type: http
+    port: 8080
+  adminConnectors:
+  - type: http
+    port: 8081

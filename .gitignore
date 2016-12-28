@@ -1,5 +1,15 @@
 *.class
 
+### JetBrains template
+# Covers JetBrains IDE IntelliJ
+*.iml
+.idea/
+*.ipr
+*.iws
+/out/
+.idea_modules/
+atlassian-ide-plugin.xml
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
