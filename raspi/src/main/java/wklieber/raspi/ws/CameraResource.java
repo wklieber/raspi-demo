@@ -91,20 +91,63 @@ public class CameraResource {
                 "attachment; filename=" + filename).build();
     }
 
+    /**
+     * take video until timout reached and retrieves it. If no timeout set, video is streamed directly
+     *
+     * @param length length of the video in ms. default is 10 sec. 0 means no timeout.
+     */
     @GET
     @Produces("video/avi")
     @Path("/takeVideo")
-    public Response takeVideo() throws IOException, InterruptedException {
+    public Response takeVideo(@QueryParam("width") Integer width,
+                              @QueryParam("height") Integer height,
+                              @QueryParam("length") Integer length) throws IOException, InterruptedException {
+
+        System.out.println("takeVideo: width=" + width + ", height=" + height + ", length=" + length);
+
+        //1920x1080
+        if (width == null) width = 1920;
+        if (height == null) height = 1080;
+        if (length == null) length = 10 * 1000;
+
+        boolean directStream = (length == 0);
         File file = new File("/tmp/testvid.h264");
 
-        System.out.println("START PROGRAM");
-        long start = System.currentTimeMillis();
+        System.out.println("START PROGRAM, direct=" + directStream);
+        String command = "raspivid -w " + width + " -h " + height + " -n -t " + length + " -o -";
+        System.out.println(command);
+        Process p = Runtime.getRuntime().exec(command);
+
+        InputStream responseStream;
+        if (directStream) {
+            responseStream = new BufferedInputStream(p.getInputStream());
+        } else {
+            streamToFile(file, p);
+            System.out.println("END PROGRAM: size=" + file.length() + "B");
+            responseStream = new FileInputStream(file);
+        }
+
+        String filename;
+        synchronized (formatter) {
+            filename = "testvid.h264";//"video" + formatter.format(new Date(System.currentTimeMillis())) + ".h264";
+        }
+
         try {
 
-            Process p = Runtime.getRuntime().exec("raspivid -w 100 -h 100 -n -t 10000 -o -");
-            BufferedInputStream bis = new BufferedInputStream(p.getInputStream());
-            //Direct methode p.getInputStream().read() also possible, but BufferedInputStream gives 0,5-1s better performance
-            FileOutputStream fos = new FileOutputStream("testvid.h264");
+            return Response.ok(responseStream).header("Content-Disposition",
+                    "attachment; filename=" + filename).build();
+        } catch (Exception e) {
+            System.err.println("error streaming file: " + file);
+            e.printStackTrace();
+            throw e;
+        }
+
+    }
+
+    private void streamToFile(File file, Process p) throws IOException {
+        try (BufferedInputStream bis = new BufferedInputStream(p.getInputStream());
+             //Direct methode p.getInputStream().read() also possible, but BufferedInputStream gives 0,5-1s better performance
+             FileOutputStream fos = new FileOutputStream(file, false);) {
 
             System.out.println("start writing");
             int read = bis.read();
@@ -114,26 +157,10 @@ public class CameraResource {
                 read = bis.read();
                 fos.write(read);
             }
-            System.out.println("end writing");
-            bis.close();
-            fos.close();
-
-        } catch (IOException ieo) {
-            ieo.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("error writing file: " + file);
+            e.printStackTrace();
+            throw e;
         }
-        System.out.println("END PROGRAM: size=" + file.getTotalSpace() + "B");
-        System.out.println("Duration in ms: " + (System.currentTimeMillis() - start));
-
-        String filename;
-        synchronized (formatter) {
-            filename = "video" + formatter.format(new Date(System.currentTimeMillis())) + ".h264";
-        }
-
-
-        try (InputStream inputStream = new FileInputStream(file)) {
-            return Response.ok(inputStream).header("Content-Disposition",
-                    "attachment; filename=" + filename).build();
-        }
-
     }
 }
